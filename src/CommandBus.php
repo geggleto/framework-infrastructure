@@ -37,8 +37,10 @@ class CommandBus
      */
     public function __construct(ContainerInterface $container, EventBus $eventBus, array $handlers = [])
     {
+        $eventBus->setCommandBus($this);
+
         $this->container = $container;
-        $this->eventBus = new EventBus();
+        $this->eventBus = $eventBus;
         $this->handlers = $handlers;
     }
 
@@ -71,8 +73,10 @@ class CommandBus
      * @return bool
      */
     public function handle(AbstractCommand $command) {
-        /** @var $handler AbstractCommandHandler */
-        if ($handler = $this->handlers[get_class($command)]) {
+        /** @var $handler string */
+        if ($handlerEntry = $this->handlers[get_class($command)]) {
+            /** @var $handler AbstractCommandHandler */
+            $handler = $this->container->get($handlerEntry);
             $result = $handler->handle($command);
 
             foreach ($handler->getEvents() as $event) {

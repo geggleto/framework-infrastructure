@@ -18,5 +18,13 @@
         "psr-4" : {
             "Infra\\": "src"
         }
+    },
+  "autoload-dev" : {
+    "psr-4" : {
+      "Tests\\Infra\\" : "tests"
     }
+  },
+  "scripts" : {
+    "test" : "phpunit --bootstrap tests/bootstrap.php tests"
+  }
 }

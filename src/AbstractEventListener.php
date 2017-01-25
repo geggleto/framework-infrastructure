@@ -19,7 +19,9 @@ abstract class AbstractEventListener implements EventListenerInterface
      */
     public function getEvents()
     {
-        return $this->events;
+        $events = $this->events;
+        $this->events = [];
+        return $events;
     }
 
     /**
@@ -35,13 +37,15 @@ abstract class AbstractEventListener implements EventListenerInterface
      */
     public function getCommands()
     {
-        return $this->commands;
+        $commands = $this->commands;
+        $this->commands = [];
+        return $commands;
     }
 
     /**
      * @param AbstractCommand $commands
      */
-    public function setCommands(AbstractCommand $commands)
+    public function addCommand(AbstractCommand $commands)
     {
         $this->commands[] = $commands;
     }

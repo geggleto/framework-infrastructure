@@ -24,7 +24,9 @@ abstract class AbstractCommandHandler
      * @return AbstractEvent[]
      */
     public function getEvents() {
-        return $this->events;
+        $events = $this->events;
+        $this->events = [];
+        return $events;
     }
 
     /**

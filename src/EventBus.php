@@ -50,7 +50,7 @@ class EventBus
      * @param $instance
      */
     public function addListener($eventName, EventListenerInterface $instance) {
-        if (!is_array($this->listeners[$eventName])) {
+        if (!isset($this->listeners[$eventName])) {
             $this->listeners[$eventName] = [];
         }
 
