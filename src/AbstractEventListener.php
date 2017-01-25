@@ -9,7 +9,7 @@
 namespace Infra;
 
 
-abstract class AbstractEventListener
+abstract class AbstractEventListener implements EventListenerInterface
 {
     private $events = [];
     private $commands = [];

@@ -9,7 +9,7 @@
 namespace Infra;
 
 
-class AbstractEvent
+abstract class AbstractEvent
 {
-
+    abstract public function getName();
 }

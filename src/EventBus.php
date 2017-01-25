@@ -47,31 +47,33 @@ class EventBus
 
     /**
      * @param $eventName
-     * @param $class
+     * @param $instance
      */
-    public function addListener($eventName, $class) {
+    public function addListener($eventName, EventListenerInterface $instance) {
         if (!is_array($this->listeners[$eventName])) {
             $this->listeners[$eventName] = [];
         }
 
-        $this->listeners[$eventName][] = $class;
+        $this->listeners[$eventName][] = $instance;
     }
 
     /**
      * @param AbstractEvent $event
      */
     public function raise(AbstractEvent $event) {
-        foreach ($this->listeners as $listener) {
-            /** @var $listener AbstractEventListener */
-            $listener->receiveEvent($event);
+        if (isset($this->listeners[$event->getName()])) {
+            foreach ($this->listeners[$event->getName()] as $listener) {
+                /** @var $listener EventListenerInterface */
+                $listener->receiveEvent($event);
 
-            foreach ($listener->getEvents() as $event) {
-                $this->raise($event);
-            }
+                foreach ($listener->getEvents() as $event) {
+                    $this->raise($event);
+                }
 
-            if ($this->commandBus instanceof CommandBus) {
-                foreach ($listener->getCommands() as $command) {
-                    $this->commandBus->handle($command);
+                if ($this->commandBus instanceof CommandBus) {
+                    foreach ($listener->getCommands() as $command) {
+                        $this->commandBus->handle($command);
+                    }
                 }
             }
         }
