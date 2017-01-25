@@ -1,5 +1,22 @@
 {
+    "name": "geggleto/infrastructure",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Glenn Eggleton",
+            "email": "geggleto@gmail.com"
+        }
+    ],
+    "require-dev" : {
+        "phpunit/phpunit": "*"
+    },
     "require": {
         "slim/slim": "^3.7"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Infra\\": "src"
+        }
     }
 }
