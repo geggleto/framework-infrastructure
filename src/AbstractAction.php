@@ -18,9 +18,6 @@ abstract class AbstractAction
     /** @var CommandBus  */
     protected $commandBus;
 
-    /** @var EventBus  */
-    protected $eventBus;
-
     /**
      * AbstractAction constructor.
      *
@@ -29,7 +26,6 @@ abstract class AbstractAction
     public function __construct(CommandBus $bus)
     {
         $this->commandBus = $bus;
-        $this->eventBus = $bus->getEventBus();
     }
 
     /**
