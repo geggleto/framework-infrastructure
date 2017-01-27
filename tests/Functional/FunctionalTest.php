@@ -10,7 +10,7 @@ namespace Tests\Infra\Functional;
 
 
 use Infra\CommandBus;
-use Infra\EventBus;
+use Infra\EventDipsatcher;
 use PHPUnit\Framework\TestCase;
 use Tests\Infra\Implementation\TestCommand;
 use Tests\Infra\Implementation\TestCommandHandler;
@@ -30,7 +30,7 @@ class FunctionalTest extends TestCase
         $container->add(TestCommandHandler::class, $handler1);
         $container->add("2", $handler2);
 
-        $commandBus = new CommandBus($container, new EventBus());
+        $commandBus = new CommandBus($container, new EventDipsatcher());
         $commandBus->addHandler(TestCommand::class, TestCommandHandler::class);
 
         $command = new TestCommand(rand(1, 5));
@@ -43,7 +43,7 @@ class FunctionalTest extends TestCase
 
     public function testEventBusDeliversProperly() {
         $eventHandler = new TestEventHandler();
-        $eventBus = new EventBus();
+        $eventBus = new EventDipsatcher();
         $eventBus->addListener(TestEvent::class, $eventHandler);
         $event = new TestEvent();
 
@@ -59,12 +59,12 @@ class FunctionalTest extends TestCase
         $container = new TestContainer();
         $container->add(TestCommandHandlerWithQueuedEvent::class, $handler1);
 
-        $commandBus = new CommandBus($container, new EventBus());
+        $commandBus = new CommandBus($container, new EventDipsatcher());
         $commandBus->addHandler(TestCommand::class, TestCommandHandlerWithQueuedEvent::class);
 
         $command = new TestCommand(rand(1, 5));
 
-        $eventBus = $commandBus->getEventBus();
+        $eventBus = $commandBus->getEventDipsatcher();
 
         $eventHandler = new TestEventHandlerWithQueuedCommand();
         $eventBus->addListener(TestEvent::class, $eventHandler);

@@ -6,12 +6,12 @@
  * Time: 2:25 PM
  */
 
-namespace Infra;
+namespace Infra\Http;
 
 
+use Infra\CommandBus;
 use Psr\Http\Message\ResponseInterface;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractAction
 {
@@ -29,11 +29,10 @@ abstract class AbstractAction
     }
 
     /**
-     * @param Request $request
-     * @param Response $response
+     * @param ServerRequestInterface $request
+     * @param ResponseInterface $response
      * @param array $args
-     *
      * @return ResponseInterface
      */
-    abstract public function __invoke(Request $request, Response $response, array $args = []);
+    abstract public function __invoke(ServerRequestInterface $request, ResponseInterface $response, array $args = []);
 }

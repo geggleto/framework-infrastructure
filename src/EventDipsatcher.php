@@ -9,7 +9,7 @@
 namespace Infra;
 
 
-class EventBus
+class EventDipsatcher implements EventDipsatcherInterface
 {
     /** @var array  */
     protected $listeners;

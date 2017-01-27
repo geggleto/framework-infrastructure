@@ -11,12 +11,12 @@ namespace Infra;
 
 use Interop\Container\ContainerInterface;
 
-class CommandBus
+class CommandBus implements CommandBusInterface
 {
     /**
-     * @var EventBus
+     * @var EventDipsatcher
      */
-    protected $eventBus;
+    protected $eventDipsatcher;
 
     /**
      * @var array
@@ -32,15 +32,15 @@ class CommandBus
     /**
      * CommandBus constructor.
      * @param ContainerInterface $container
-     * @param EventBus $eventBus
+     * @param EventDipsatcher $eventBus
      * @param array $handlers
      */
-    public function __construct(ContainerInterface $container, EventBus $eventBus, array $handlers = [])
+    public function __construct(ContainerInterface $container, EventDipsatcher $eventBus, array $handlers = [])
     {
         $eventBus->setCommandBus($this);
 
         $this->container = $container;
-        $this->eventBus = $eventBus;
+        $this->eventDipsatcher = $eventBus;
         $this->handlers = $handlers;
     }
 
@@ -61,11 +61,11 @@ class CommandBus
     }
 
     /**
-     * @return EventBus
+     * @return EventDipsatcher
      */
-    public function getEventBus()
+    public function getEventDipsatcher()
     {
-        return $this->eventBus;
+        return $this->eventDipsatcher;
     }
 
     /**
@@ -81,7 +81,7 @@ class CommandBus
 
             foreach ($handler->getEvents() as $event) {
                 /** @var $event AbstractEvent */
-                $this->eventBus->raise($event);
+                $this->eventDipsatcher->raise($event);
             }
 
             return $result;
