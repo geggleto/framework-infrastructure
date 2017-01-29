@@ -49,7 +49,7 @@ class EventDipsatcher implements EventDipsatcherInterface
      * @param $eventName
      * @param $instance
      */
-    public function addListener($eventName, EventListenerInterface $instance) {
+    public function addListener($eventName, callable $instance) {
         if (!isset($this->listeners[$eventName])) {
             $this->listeners[$eventName] = [];
         }
@@ -63,18 +63,8 @@ class EventDipsatcher implements EventDipsatcherInterface
     public function raise(AbstractEvent $event) {
         if (isset($this->listeners[$event->getName()])) {
             foreach ($this->listeners[$event->getName()] as $listener) {
-                /** @var $listener EventListenerInterface */
-                $listener->receiveEvent($event);
-
-                foreach ($listener->getEvents() as $event) {
-                    $this->raise($event);
-                }
-
-                if ($this->commandBus instanceof CommandBus) {
-                    foreach ($listener->getCommands() as $command) {
-                        $this->commandBus->handle($command);
-                    }
-                }
+                /** @var $listener callable */
+                call_user_func($listener, $event);
             }
         }
     }

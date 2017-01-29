@@ -21,9 +21,9 @@ interface EventDipsatcherInterface
 
     /**
      * @param $eventName
-     * @param $instance
+     * @param callable $instance
      */
-    public function addListener($eventName, EventListenerInterface $instance);
+    public function addListener($eventName, callable $listener);
 
     /**
      * @param AbstractEvent $event

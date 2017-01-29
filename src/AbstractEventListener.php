@@ -14,6 +14,15 @@ abstract class AbstractEventListener implements EventListenerInterface
     private $events = [];
     private $commands = [];
 
+    protected $bus;
+    protected $eventDispatcher;
+
+    public function __construct(CommandBus $bus)
+    {
+        $this->bus = $bus;
+        $this->eventDispatcher = $bus->getEventDipsatcher();
+    }
+
     /**
      * @return AbstractEvent[]
      */
@@ -54,5 +63,13 @@ abstract class AbstractEventListener implements EventListenerInterface
      * @param AbstractEvent $event
      * @return void
      */
-    abstract public function receiveEvent(AbstractEvent $event);
+    public function receiveEvent(AbstractEvent $event) {
+        foreach ($this->getEvents() as $event) {
+            $this->eventDispatcher->raise($event);
+        }
+
+        foreach ($this->getCommands() as $command) {
+            $this->bus->handle($command);
+        }
+    }
 }

@@ -25,6 +25,8 @@ class TestEventHandlerWithQueuedCommand extends AbstractEventListener
         $this->count++;
 
         $this->addCommand(new TestCommand(rand(1, 100)));
+
+        parent::receiveEvent($event);
     }
 
     /**

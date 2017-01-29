@@ -42,9 +42,9 @@ class FunctionalTest extends TestCase
     }
 
     public function testEventBusDeliversProperly() {
-        $eventHandler = new TestEventHandler();
+        $eventHandler = new TestEventHandler(new CommandBus(new TestContainer(), new EventDipsatcher()));
         $eventBus = new EventDipsatcher();
-        $eventBus->addListener(TestEvent::class, $eventHandler);
+        $eventBus->addListener(TestEvent::class, [$eventHandler, 'receiveEvent']);
         $event = new TestEvent();
 
         $eventBus->raise($event);
@@ -66,8 +66,8 @@ class FunctionalTest extends TestCase
 
         $eventBus = $commandBus->getEventDipsatcher();
 
-        $eventHandler = new TestEventHandlerWithQueuedCommand();
-        $eventBus->addListener(TestEvent::class, $eventHandler);
+        $eventHandler = new TestEventHandlerWithQueuedCommand($commandBus);
+        $eventBus->addListener(TestEvent::class, [$eventHandler, 'receiveEvent']);
 
         $commandBus->handle($command);
 
