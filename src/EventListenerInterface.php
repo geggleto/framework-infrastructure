@@ -14,17 +14,4 @@ interface EventListenerInterface
      * @return void
      */
     public function receiveEvent(AbstractEvent $event);
-
-
-    /**
-     * @return AbstractCommand[]
-     */
-    public function getCommands();
-
-
-    /**
-     * @return AbstractEvent[]
-     */
-    public function getEvents();
-
 }

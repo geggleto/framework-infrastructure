@@ -11,49 +11,6 @@ namespace Infra;
 
 abstract class AbstractEventListener implements EventListenerInterface
 {
-    private $events = [];
-    private $commands = [];
-
-
-    public function __construct()
-    {
-    }
-
-    /**
-     * @return AbstractEvent[]
-     */
-    public function getEvents()
-    {
-        $events = $this->events;
-        $this->events = [];
-        return $events;
-    }
-
-    /**
-     * @param AbstractEvent $event
-     */
-    public function addEvent(AbstractEvent $event)
-    {
-        $this->events[] = $event;
-    }
-
-    /**
-     * @return AbstractCommand[]
-     */
-    public function getCommands()
-    {
-        $commands = $this->commands;
-        $this->commands = [];
-        return $commands;
-    }
-
-    /**
-     * @param AbstractCommand $commands
-     */
-    public function addCommand(AbstractCommand $commands)
-    {
-        $this->commands[] = $commands;
-    }
 
     /**
      * @param AbstractEvent $event
