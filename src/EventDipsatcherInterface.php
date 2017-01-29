@@ -9,21 +9,12 @@ namespace Infra;
 
 interface EventDipsatcherInterface
 {
-    /**
-     * @return CommandBus
-     */
-    public function getCommandBus();
-
-    /**
-     * @param CommandBus $commandBus
-     */
-    public function setCommandBus(CommandBus $commandBus);
 
     /**
      * @param $eventName
      * @param callable $instance
      */
-    public function addListener($eventName, callable $listener);
+    public function addListener($eventName, $listenerClass);
 
     /**
      * @param AbstractEvent $event

@@ -18,8 +18,11 @@ class TestCommandHandler extends AbstractCommandHandler
 
     public function handle(AbstractCommand $command)
     {
-        $this->count++;
-
+        if ($command instanceof TestCommand) {
+            $this->count = $command->getSecret();
+        } else {
+            die();
+        }
     }
 
     public function getCount() {

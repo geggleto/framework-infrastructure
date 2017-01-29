@@ -9,52 +9,36 @@
 namespace Infra;
 
 
+use Interop\Container\ContainerInterface;
+
 class EventDipsatcher implements EventDipsatcherInterface
 {
     /** @var array  */
     protected $listeners;
 
-    /** @var CommandBus */
-    protected $commandBus;
-
-
-    /**
-     * EventBus constructor.
-     *
-     * @param array $listeners
-     */
-    public function __construct(array $listeners = [])
-    {
-        $this->listeners = $listeners;
-        $this->commandBus = null;
-    }
+    /** @var ContainerInterface  */
+    protected $container;
 
     /**
-     * @return CommandBus
+     * EventDipsatcher constructor.
+     * @param ContainerInterface $container
      */
-    public function getCommandBus()
+    public function __construct(ContainerInterface $container)
     {
-        return $this->commandBus;
-    }
-
-    /**
-     * @param CommandBus $commandBus
-     */
-    public function setCommandBus(CommandBus $commandBus)
-    {
-        $this->commandBus = $commandBus;
+        $this->listeners = [];
+        $this->container = $container;
     }
 
     /**
      * @param $eventName
-     * @param $instance
+     * @param $listenerClass
      */
-    public function addListener($eventName, callable $instance) {
+    public function addListener($eventName, $listenerClass) {
         if (!isset($this->listeners[$eventName])) {
             $this->listeners[$eventName] = [];
         }
 
-        $this->listeners[$eventName][] = $instance;
+        $this->listeners[$eventName][] = $listenerClass;
     }
 
     /**
@@ -63,8 +47,10 @@ class EventDipsatcher implements EventDipsatcherInterface
     public function raise(AbstractEvent $event) {
         if (isset($this->listeners[$event->getName()])) {
             foreach ($this->listeners[$event->getName()] as $listener) {
+                $base = $this->container->get($listener[0]);
+
                 /** @var $listener callable */
-                call_user_func($listener, $event);
+                call_user_func([$base, $listener[1]], $event);
             }
         }
     }

@@ -16,11 +16,6 @@ interface CommandBusInterface
     public function addHandler($command, $class);
 
     /**
-     * @return EventDipsatcher
-     */
-    public function getEventDipsatcher();
-
-    /**
      * @param AbstractCommand $command
      * @return bool
      */
