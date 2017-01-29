@@ -11,7 +11,7 @@ namespace Tests\Infra\Implementation;
 
 use Infra\AbstractCommand;
 use Infra\AbstractCommandHandler;
-use Infra\EventDipsatcher;
+use Infra\EventDispatcher;
 
 class FunctionalTestCommandHandler extends AbstractCommandHandler
 {
@@ -19,7 +19,7 @@ class FunctionalTestCommandHandler extends AbstractCommandHandler
 
     protected $dispatcher;
 
-    public function __construct(EventDipsatcher $dispatcher)
+    public function __construct(EventDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
         $this->count = 0;

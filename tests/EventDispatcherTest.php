@@ -9,7 +9,7 @@
 namespace Tests\Infra;
 
 
-use Infra\EventDipsatcher;
+use Infra\EventDispatcher;
 use PHPUnit\Framework\TestCase;
 use Tests\Infra\Implementation\TestContainer;
 use Tests\Infra\Implementation\TestEvent;
@@ -17,7 +17,7 @@ use Tests\Infra\Implementation\TestEventHandler;
 
 class EventDispatcherTest extends TestCase
 {
-    /** @var  EventDipsatcher */
+    /** @var  EventDispatcher */
     protected $dispatcher;
 
     /** @var  TestEventHandler */
@@ -29,7 +29,7 @@ class EventDispatcherTest extends TestCase
         $container = new TestContainer();
         $container->add(TestEventHandler::class, $this->handler);
 
-        $this->dispatcher = new EventDipsatcher($container);
+        $this->dispatcher = new EventDispatcher($container);
         $this->dispatcher->addListener(TestEvent::class, [TestEventHandler::class, 'receiveEvent']);
     }
 

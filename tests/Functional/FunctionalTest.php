@@ -10,7 +10,7 @@ namespace Tests\Infra\Functional;
 
 
 use Infra\CommandBus;
-use Infra\EventDipsatcher;
+use Infra\EventDispatcher;
 use PHPUnit\Framework\TestCase;
 use Tests\Infra\Implementation\FunctionalTestCommandHandler;
 use Tests\Infra\Implementation\FunctionalTestEventListener;
@@ -51,7 +51,7 @@ class FunctionalTest extends TestCase
         $this->commandBus = new CommandBus($this->container);
 
 
-        $this->eventDispatcher = new EventDipsatcher($this->container);
+        $this->eventDispatcher = new EventDispatcher($this->container);
 
         $this->handler = new FunctionalTestCommandHandler($this->eventDispatcher);
 

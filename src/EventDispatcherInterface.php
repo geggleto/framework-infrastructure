@@ -7,7 +7,7 @@
  */
 namespace Infra;
 
-interface EventDipsatcherInterface
+interface EventDispatcherInterface
 {
 
     /**

@@ -11,7 +11,7 @@ namespace Infra;
 
 use Interop\Container\ContainerInterface;
 
-class EventDipsatcher implements EventDipsatcherInterface
+class EventDispatcher implements EventDispatcherInterface
 {
     /** @var array  */
     protected $listeners;
