@@ -12,74 +12,64 @@ namespace Tests\Infra\Functional;
 use Infra\CommandBus;
 use Infra\EventDipsatcher;
 use PHPUnit\Framework\TestCase;
+use Tests\Infra\Implementation\FunctionalTestCommandHandler;
+use Tests\Infra\Implementation\FunctionalTestEventListener;
+use Tests\Infra\Implementation\FunctionTestCommand;
 use Tests\Infra\Implementation\TestCommand;
 use Tests\Infra\Implementation\TestCommandHandler;
-use Tests\Infra\Implementation\TestCommandHandlerWithQueuedEvent;
+
 use Tests\Infra\Implementation\TestContainer;
 use Tests\Infra\Implementation\TestEvent;
 use Tests\Infra\Implementation\TestEventHandler;
-use Tests\Infra\Implementation\TestEventHandlerWithQueuedCommand;
 
+
+/**
+ * Class FunctionalTest
+ * @package Tests\Infra\Functional
+ *
+ * The goal of this test is to make sure that we can complete a complicated execution Pattern
+ * A command is fired, to create an event, which creates a command
+ */
 class FunctionalTest extends TestCase
 {
-    public function testCommandBusOnlyDeliversProperly() {
-        $this->markTestSkipped();
-        return;
-        $handler1 = new TestCommandHandler();
-        $handler2 = new TestCommandHandler();
+    /** @var CommandBus */
+    protected $commandBus;
 
-        $container = new TestContainer();
-        $container->add(TestCommandHandler::class, $handler1);
-        $container->add("2", $handler2);
+    protected $eventDispatcher;
 
-        $commandBus = new CommandBus($container, new EventDipsatcher());
-        $commandBus->addHandler(TestCommand::class, TestCommandHandler::class);
+    protected $container;
 
-        $command = new TestCommand(rand(1, 5));
+    /** @var FunctionalTestCommandHandler */
+    protected $handler;
 
-        $commandBus->handle($command);
+    /** @var  FunctionalTestEventListener */
+    protected $listener;
 
-        $this->assertEquals(1, $handler1->getCount());
-        $this->assertEquals(0, $handler2->getCount());
+    public function setUp()
+    {
+        $this->container = new TestContainer();
+        $this->commandBus = new CommandBus($this->container);
+
+
+        $this->eventDispatcher = new EventDipsatcher($this->container);
+
+        $this->handler = new FunctionalTestCommandHandler($this->eventDispatcher);
+
+        $this->listener = new FunctionalTestEventListener($this->commandBus);
+
+        $this->container->add(FunctionalTestCommandHandler::class, $this->handler);
+        $this->container->add(FunctionalTestEventListener::class, $this->listener);
+
+
+        $this->commandBus->addHandler(FunctionTestCommand::class, FunctionalTestCommandHandler::class);
+        $this->eventDispatcher->addListener(TestEvent::class, [FunctionalTestEventListener::class, 'receiveEvent']);
+
+        //We will Fire TestCommand to emit TestEvent which will be handled and sent back to TestCommand
     }
 
-    public function testEventBusDeliversProperly() {
-        $this->markTestSkipped();
-        return;
-
-        $eventHandler = new TestEventHandler(new CommandBus(new TestContainer(), new EventDipsatcher()));
-        $eventBus = new EventDipsatcher();
-        $eventBus->addListener(TestEvent::class, [$eventHandler, 'receiveEvent']);
-        $event = new TestEvent();
-
-        $eventBus->raise($event);
-
-        $this->assertEquals(1, $eventHandler->getCount());
-    }
-
-    public function testCommandBusEventBusWithQueuedCommandFromEventHandler() {
-        $this->markTestSkipped();
-        return;
-
-        $handler1 = new TestCommandHandlerWithQueuedEvent();
-        $handler2 = new TestCommandHandler();
-
-        $container = new TestContainer();
-        $container->add(TestCommandHandlerWithQueuedEvent::class, $handler1);
-
-        $commandBus = new CommandBus($container, new EventDipsatcher());
-        $commandBus->addHandler(TestCommand::class, TestCommandHandlerWithQueuedEvent::class);
-
-        $command = new TestCommand(rand(1, 5));
-
-        $eventBus = $commandBus->getEventDipsatcher();
-
-        $eventHandler = new TestEventHandlerWithQueuedCommand($commandBus);
-        $eventBus->addListener(TestEvent::class, [$eventHandler, 'receiveEvent']);
-
-        $commandBus->handle($command);
-
-        $this->assertEquals(2, $handler1->getCount());
-        $this->assertEquals(0, $handler2->getCount());
+    public function testScenario() {
+        $this->commandBus->handle(new FunctionTestCommand());
+        $this->assertEquals($this->listener->getCount(), 1);
+        $this->assertEquals($this->handler->getCount(), 2);
     }
 }
